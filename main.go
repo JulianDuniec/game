@@ -8,23 +8,24 @@ import (
 )
 
 func main() {
-	gameEngine()
-	webSocketServer()
+
+	gameEngine(
+		webSocketServer())
 	fileServer()
 }
 
-func gameEngine() {
-	engine.CreateGameEngine()
+func gameEngine(s *server.Server) {
+	e := engine.CreateGameEngine(s)
+	go e.Run()
 }
 
-func webSocketServer() {
+func webSocketServer() *server.Server {
 	server := server.NewServer("/ws")
 	go server.Listen()
+	return server
 }
 
 func fileServer() {
-	log.Println("Starting file server")
-
 	//Setup file-server
 	http.Handle("/", http.FileServer(http.Dir("webroot")))
 

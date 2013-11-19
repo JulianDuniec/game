@@ -3,7 +3,6 @@ package server
 import (
 	"code.google.com/p/go.net/websocket"
 	"github.com/julianduniec/game/utils"
-	"io"
 	"log"
 )
 
@@ -12,7 +11,7 @@ type Client struct {
 	server         *Server
 	messageChannel chan *ServerMessage
 	quitChannel    chan bool
-	id             string
+	Id             string
 }
 
 func NewClient(ws *websocket.Conn, server *Server) *Client {
@@ -58,23 +57,23 @@ func (c *Client) listenRead() {
 		case <-c.quitChannel:
 			return
 		default:
-			c.receiveMessage()
+			if !c.receiveMessage() {
+				//There was some error reading the message
+				return
+			}
 		}
 	}
 }
 
-func (c *Client) receiveMessage() {
+func (c *Client) receiveMessage() bool {
 	var msg ClientMessage
 	err := websocket.JSON.Receive(c.ws, &msg)
-	msg.ClientId = c.id
-	if err == io.EOF {
-		log.Println("Client listen eof")
-		c.Quit()
-	} else if err != nil {
+	msg.Client = c
+	if err != nil {
 		log.Println("Client listen error", err.Error())
 		c.Quit()
-	} else {
-		c.server.ReceiveMessage(c, &msg)
-		c.Write(&ServerMessage{"Hello Client!"})
+		return false
 	}
+	c.server.messages <- &msg
+	return true
 }

@@ -7,6 +7,7 @@ var Client = function(options) {
 		me.connection.onopen = me.connectionOpen;
 		me.connection.onmessage = me.connectionMessage;
 		me.connection.onerror = me.connectionError;
+		me.connection.onclose = me.connectionClosed;
 	};
 
 	me.connectionOpen = function() {
@@ -18,7 +19,11 @@ var Client = function(options) {
 	};
 
 	me.connectionError = function() {
-		options.onopen(me);
+		options.onerror(me);
+	};
+
+	me.connectionClosed = function() {
+		options.onerror(me);
 	};
 
 	me.send = function(s) {

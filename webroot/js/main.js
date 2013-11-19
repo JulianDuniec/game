@@ -13,7 +13,7 @@ var client = new Client({
 		client.send("Hello")
 	},
 	onerror : function(client) {
-		alert("THERE WAS ERROR AND SERIOUS IS WAS!")
+		document.getElementsByTagName("body")[0].innerHTML = "THERE WAS AN ERROR THERE WAS!"
 	}
 
 });
