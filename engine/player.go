@@ -11,6 +11,18 @@ type Player struct {
 	client   *server.Client
 }
 
-func (p *Player) Update() {
+func (p *Player) Update(w *World) {
 	p.position = p.position.Add(p.velocity)
+}
+
+func (p *Player) Position() utils.Vector3 {
+	return p.position
+}
+
+func (p *Player) Id() string {
+	return p.client.Id
+}
+
+func (p *Player) Type() string {
+	return "player"
 }

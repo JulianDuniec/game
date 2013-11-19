@@ -5,7 +5,8 @@ import (
 )
 
 type WorldObject interface {
-	Position() *utils.Vector3
+	Position() utils.Vector3
 	Type() string
 	Id() string
+	Update(*World)
 }

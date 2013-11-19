@@ -15,12 +15,14 @@ var (
 type GameEngine struct {
 	server  *server.Server
 	players map[string]*Player
+	world   *World
 }
 
 func CreateGameEngine(server *server.Server) *GameEngine {
 	ge := &GameEngine{
 		server,
 		make(map[string]*Player),
+		CreateWorld(),
 	}
 	ge.Init()
 	return ge
@@ -34,9 +36,11 @@ func (ge *GameEngine) Init() {
 	Main game cycle
 */
 func (ge *GameEngine) Loop() {
+	ge.world.Update()
+
+	//Send the delta to all players
 	for k := range ge.players {
 		p := ge.players[k]
-		p.Update()
 		log.Println(p)
 		go p.client.Write(&server.ServerMessage{"Poop"})
 	}
@@ -68,12 +72,15 @@ func (ge *GameEngine) ClientConnected(c *server.Client) {
 		c,
 	}
 	ge.players[p.client.Id] = p
+	ge.world.Add(p)
 	log.Println("Added player", p)
 }
 
 func (ge *GameEngine) ClientDisconnected(c *server.Client) {
-	log.Println("Removing player", ge.players[c.Id])
+	p := ge.players[c.Id]
+	log.Println("Removing player")
 	delete(ge.players, c.Id)
+	ge.world.Delete(p)
 }
 
 func (ge *GameEngine) MessageReceived(m *server.ClientMessage) {
