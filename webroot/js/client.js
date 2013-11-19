@@ -10,16 +10,15 @@ var Client = function(options) {
 	};
 
 	me.connectionOpen = function() {
-		console.log("Connection open");
-		me.send("Hello Server!")
+		options.onopen(me);
 	};
 
 	me.connectionMessage = function(message) {
-		console.log("Connection message", message)
+		options.onmessage(me, message.data);
 	};
 
 	me.connectionError = function() {
-		console.log("Connection error")
+		options.onopen(me);
 	};
 
 	me.send = function(s) {

@@ -1,32 +1,27 @@
-var Client = function(options) {
-	var me = this;
-	me.url = "ws://localhost:1337/ws";
-	me.WebSocket = window.WebSocket || window.MozWebSocket;
-	me.init = function() {
-		me.connection = new me.WebSocket(me.url);
-		me.connection.onopen = me.connectionOpen;
-		me.connection.onmessage = me.connectionMessage;
-		me.connection.onerror = me.connectionError;
-	};
 
-	me.connectionOpen = function() {
-		console.log("Connection open");
-		me.send("Hello Server!")
-	};
+function log(s) {
+	s = s + "<br />" + document.getElementById("log").innerHTML;
+	s = s.substring(0, 200);
+	document.getElementById("log").innerHTML = s;
+}
 
-	me.connectionMessage = function(message) {
-		console.log("Connection message", message)
-	};
+var client = new Client({
+	onmessage : function(client, s) {
+		log(s);
+	},
+	onopen : function(client) {
+		client.send("Hello")
+	},
+	onerror : function(client) {
+		alert("THERE WAS ERROR AND SERIOUS IS WAS!")
+	}
 
-	me.connectionError = function() {
-		console.log("Connection error")
-	};
+});
+client.init();
 
-	me.send = function(s) {
-		me.connection.send(JSON.stringify({body : s}));
-	};
-
-	return me;
-};
-
-new Client().init();
+/*
+	Send anything to server...
+*/
+document.getElementById("send").addEventListener("click", function() {
+	client.send(document.getElementById("message").value)
+})

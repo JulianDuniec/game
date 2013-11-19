@@ -2,6 +2,7 @@ package server
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"github.com/julianduniec/game/utils"
 	"io"
 	"log"
 )
@@ -9,16 +10,18 @@ import (
 type Client struct {
 	ws             *websocket.Conn
 	server         *Server
-	messageChannel chan *Message
+	messageChannel chan *ServerMessage
 	quitChannel    chan bool
+	id             string
 }
 
 func NewClient(ws *websocket.Conn, server *Server) *Client {
 	return &Client{
 		ws,
 		server,
-		make(chan *Message),
+		make(chan *ServerMessage),
 		make(chan bool),
+		utils.UUID(),
 	}
 }
 
@@ -26,7 +29,7 @@ func (c *Client) Quit() {
 	c.quitChannel <- true
 }
 
-func (c *Client) Write(msg *Message) {
+func (c *Client) Write(msg *ServerMessage) {
 	c.messageChannel <- msg
 }
 
@@ -39,11 +42,11 @@ func (c *Client) listenWrite() {
 	log.Println("Listening to write to client")
 	for {
 		select {
+		case <-c.quitChannel:
+			return
 		case msg := <-c.messageChannel:
 			log.Println("Sending message to client")
 			websocket.JSON.Send(c.ws, msg)
-		case <-c.quitChannel:
-			return
 		}
 	}
 }
@@ -55,18 +58,23 @@ func (c *Client) listenRead() {
 		case <-c.quitChannel:
 			return
 		default:
-			var msg Message
-			err := websocket.JSON.Receive(c.ws, &msg)
-			if err == io.EOF {
-				log.Println("Client listen eof")
-				c.Quit()
-			} else if err != nil {
-				log.Println("Client listen error", err.Error())
-				c.Quit()
-			} else {
-				c.server.ReceiveMessage(c, &msg)
-				c.Write(&Message{"Hello Client!"})
-			}
+			c.receiveMessage()
 		}
+	}
+}
+
+func (c *Client) receiveMessage() {
+	var msg ClientMessage
+	err := websocket.JSON.Receive(c.ws, &msg)
+	msg.ClientId = c.id
+	if err == io.EOF {
+		log.Println("Client listen eof")
+		c.Quit()
+	} else if err != nil {
+		log.Println("Client listen error", err.Error())
+		c.Quit()
+	} else {
+		c.server.ReceiveMessage(c, &msg)
+		c.Write(&ServerMessage{"Hello Client!"})
 	}
 }

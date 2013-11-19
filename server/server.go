@@ -48,6 +48,6 @@ func (s *Server) handleChannels() {
 	}
 }
 
-func (s *Server) ReceiveMessage(c *Client, m *Message) {
+func (s *Server) ReceiveMessage(c *Client, m *ClientMessage) {
 	log.Println("Got message", m, c)
 }
