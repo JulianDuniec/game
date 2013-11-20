@@ -1,5 +1,9 @@
 package engine
 
+import (
+	"time"
+)
+
 var (
 	maxObjects = 100000
 )
@@ -22,8 +26,8 @@ func (w *World) Delete(o WorldObject) {
 	delete(w.objects, o.Id())
 }
 
-func (w *World) Update() {
+func (w *World) Update(dt time.Duration) {
 	for k := range w.objects {
-		w.objects[k].Update(w)
+		w.objects[k].Update(w, dt)
 	}
 }
