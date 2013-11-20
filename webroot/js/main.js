@@ -43,7 +43,6 @@ function log() {
 }
 
 function dumpWorld(o) {
-	log(o)
 	var c, r, t;
     t = document.createElement('table');
 	for(k in o) {
