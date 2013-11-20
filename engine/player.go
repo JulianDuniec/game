@@ -7,8 +7,8 @@ import (
 )
 
 type Player struct {
-	position utils.Vector3
-	velocity utils.Vector3
+	Position utils.Vector3 `json:"p"`
+	Velocity utils.Vector3 `json:"v"`
 	client   *server.Client
 }
 
@@ -22,27 +22,28 @@ func (p *Player) ReactToMessage(m *server.ClientMessage) {
 /*
 	Implements interface WorldObject
 */
-func (p *Player) Update(w *World, dt time.Duration) {
-	p.position = p.position.Add(p.velocity)
+func (p *Player) Update(w *World, dt time.Duration) bool {
+	p.Position = p.Position.Add(p.Velocity)
+	return true
 }
 
 /*
 	Implements interface WorldObject
 */
-func (p *Player) Position() utils.Vector3 {
-	return p.position
+func (p *Player) GetPosition() utils.Vector3 {
+	return p.Position
 }
 
 /*
 	Implements interface WorldObject
 */
-func (p *Player) Id() string {
+func (p *Player) GetId() string {
 	return p.client.Id
 }
 
 /*
 	Implements interface WorldObject
 */
-func (p *Player) Type() string {
+func (p *Player) GetType() string {
 	return "player"
 }

@@ -12,6 +12,7 @@ type Client struct {
 	messageChannel chan *ServerMessage
 	quitChannel    chan bool
 	Id             string
+	isWriting      bool
 }
 
 func NewClient(ws *websocket.Conn, server *Server) *Client {
@@ -20,7 +21,8 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 		server,
 		make(chan *ServerMessage),
 		make(chan bool),
-		utils.UUID(),
+		utils.ID(),
+		false,
 	}
 }
 
@@ -29,7 +31,17 @@ func (c *Client) Quit() {
 }
 
 func (c *Client) Write(msg *ServerMessage) {
+	c.isWriting = true
 	c.messageChannel <- msg
+}
+
+func (c *Client) WriteIfNotBusy(msg *ServerMessage) {
+	if c.isWriting == true {
+		log.Println("Can't write, busy")
+		return
+	}
+
+	c.Write(msg)
 }
 
 func (c *Client) Listen() {
@@ -44,8 +56,8 @@ func (c *Client) listenWrite() {
 		case <-c.quitChannel:
 			return
 		case msg := <-c.messageChannel:
-			log.Println("Sending message to client")
 			websocket.JSON.Send(c.ws, msg)
+			c.isWriting = false
 		}
 	}
 }

@@ -2,7 +2,7 @@ package server
 
 type ClientMessage struct {
 	Client *Client
-	Body   string `json:"body"`
+	Body   string `json:"b"`
 }
 
 func (m *ClientMessage) String() string {
@@ -10,7 +10,7 @@ func (m *ClientMessage) String() string {
 }
 
 type ServerMessage struct {
-	Body string `json:"body"`
+	Body string `json:"b"`
 }
 
 func (m *ServerMessage) String() string {

@@ -19,15 +19,19 @@ func CreateWorld() *World {
 }
 
 func (w *World) Add(o WorldObject) {
-	w.objects[o.Id()] = o
+	w.objects[o.GetId()] = o
 }
 
 func (w *World) Delete(o WorldObject) {
-	delete(w.objects, o.Id())
+	delete(w.objects, o.GetId())
 }
 
-func (w *World) Update(dt time.Duration) {
+func (w *World) Update(dt time.Duration) []WorldObject {
+	changes := make([]WorldObject, 0)
 	for k := range w.objects {
-		w.objects[k].Update(w, dt)
+		if w.objects[k].Update(w, dt) {
+			changes = append(changes, w.objects[k])
+		}
 	}
+	return changes
 }

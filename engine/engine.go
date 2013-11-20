@@ -10,12 +10,21 @@ import (
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyNs = int64(1000 * 1e6)
+	updateFrequencyMs = 10
+	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
 	//make the updates more correct, as we
 	//use dynamic sleeps between cycles
 	lastLoop = time.Now()
+
+	//Used to print statistics about average
+	//execution times
+	totalExecutionTime = int64(0)
+	totalCount         = int64(0)
+	//Sample 'roughly' enaught samples for what should be
+	//one second
+	sampleRate = 1000 / updateFrequencyMs
 )
 
 type GameEngine struct {
@@ -45,16 +54,21 @@ func CreateGameEngine(server *server.Server) *GameEngine {
 */
 func (ge *GameEngine) Loop() {
 	dt := time.Now().Sub(lastLoop)
+	defer func() { lastLoop = time.Now() }()
 	//Update the state of the world
-	ge.world.Update(dt)
+	changes := ge.world.Update(dt)
+
+	//Nothing changed...?
+	if len(changes) == 0 {
+		return
+	}
+
+	message := GetChangeMessage(changes)
 
 	//Send the delta to all players
 	for k := range ge.players {
-		p := ge.players[k]
-		log.Println(p)
-		go p.client.Write(&server.ServerMessage{"Poop"})
+		go ge.players[k].client.WriteIfNotBusy(&server.ServerMessage{message})
 	}
-	lastLoop = time.Now()
 }
 
 func (ge *GameEngine) Run() {
@@ -69,11 +83,22 @@ func (ge *GameEngine) Run() {
 
 		executionTime := time.Now().Sub(start).Nanoseconds()
 		diff := time.Duration(updateFrequencyNs - executionTime)
-		//Sleep if there is time... otherwise, 
+		//Sleep if there is time... otherwise,
 		//Continue to try to keep up :P
 		if diff > 0 {
 			time.Sleep(diff)
 		}
+		ge.PrintRunStats(executionTime)
+	}
+}
+
+func (ge *GameEngine) PrintRunStats(t int64) {
+	totalExecutionTime += t
+	totalCount++
+	if totalCount%int64(sampleRate) == 0 {
+		log.Println("AVG:", time.Duration(totalExecutionTime/totalCount), "\tMAX:", time.Duration(updateFrequencyNs))
+		totalExecutionTime = 0
+		totalCount = 0
 	}
 }
 
