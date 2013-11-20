@@ -1,7 +1,9 @@
 var Client = function(options) {
 	var me = this;
+	
 	me.url = "ws://localhost:1337/ws";
 	me.WebSocket = window.WebSocket || window.MozWebSocket;
+	
 	me.init = function() {
 		me.connection = new me.WebSocket(me.url);
 		me.connection.onopen = me.connectionOpen;

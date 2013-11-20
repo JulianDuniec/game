@@ -12,13 +12,14 @@
 	Initializes a client and blocks until the connection is open
 */
 var engine = new Engine({});
+var messageParser = new MessageParser({});
 var client = new Client({
 	onmessage : function(client, s) {
 		/*
 			Game state sent to engine
 		*/
-		s = JSON.parse(s)
-		engine.receiveMessage(s.b);
+		
+		engine.receiveMessage(messageParser.parse(s));
 	},
 	onopen : function(client) {
 		log("Connection open")

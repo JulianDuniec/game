@@ -8,6 +8,10 @@ func GetChangeMessage(c []WorldObject) string {
 	return "s" + serializeWorldObjects(c)
 }
 
+func GetInitMessage(w *World) string {
+	return "i" + serializeWorldObjects(w.GetObjects())
+}
+
 func serializeWorldObjects(c []WorldObject) string {
 	s := ""
 	for _, o := range c {

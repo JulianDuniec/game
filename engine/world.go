@@ -22,6 +22,16 @@ func (w *World) Add(o WorldObject) {
 	w.objects[o.GetId()] = o
 }
 
+func (w *World) GetObjects() []WorldObject {
+	o := make([]WorldObject, len(w.objects))
+	i := 0
+	for _, v := range w.objects {
+		o[i] = v
+		i++
+	}
+	return o
+}
+
 func (w *World) Delete(o WorldObject) {
 	delete(w.objects, o.GetId())
 }

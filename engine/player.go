@@ -9,6 +9,7 @@ import (
 type Player struct {
 	Position utils.Vector3 `json:"p"`
 	Velocity utils.Vector3 `json:"v"`
+	Active   bool
 	client   *server.Client
 }
 

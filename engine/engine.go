@@ -10,7 +10,7 @@ import (
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyMs = 10
+	updateFrequencyMs = 100
 	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
@@ -67,7 +67,7 @@ func (ge *GameEngine) Loop() {
 
 	//Send the delta to all players
 	for k := range ge.players {
-		go ge.players[k].client.WriteIfNotBusy(&server.ServerMessage{message})
+		ge.players[k].client.WriteIfNotBusy(&server.ServerMessage{message})
 	}
 }
 
@@ -96,7 +96,11 @@ func (ge *GameEngine) PrintRunStats(t int64) {
 	totalExecutionTime += t
 	totalCount++
 	if totalCount%int64(sampleRate) == 0 {
-		log.Println("AVG:", time.Duration(totalExecutionTime/totalCount), "\tMAX:", time.Duration(updateFrequencyNs))
+		avg := totalExecutionTime / totalCount
+		log.Println("AVGEX:",
+			time.Duration(avg),
+			"\tAVGSLEEP:",
+			time.Duration(updateFrequencyNs-avg))
 		totalExecutionTime = 0
 		totalCount = 0
 	}
@@ -109,11 +113,15 @@ func (ge *GameEngine) ClientConnected(c *server.Client) {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
 		utils.Vector3{0.1, 0, 0},
+		false, //Inactive at first
 		c,
 	}
 	ge.players[p.client.Id] = p
 	ge.world.Add(p)
-	log.Println("Added player", p)
+	log.Println("Added player", p, "sending state")
+	message := GetInitMessage(ge.world)
+	p.client.WriteIfNotBusy(&server.ServerMessage{message})
+	p.Active = true
 }
 
 /*
