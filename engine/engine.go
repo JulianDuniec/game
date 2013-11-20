@@ -10,7 +10,7 @@ import (
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyMs = 100
+	updateFrequencyMs = 1000
 	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
@@ -128,6 +128,7 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
 		utils.Vector3{0.1, 0, 0},
+		"Guest",
 		false, //Inactive at first
 		c,
 	}

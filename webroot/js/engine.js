@@ -6,13 +6,33 @@ var Engine = function(options) {
 	me.init = function(data) {
 		//Initial world setup
 		me.world = [];
-		me.update(data);
+		for(var i = 0; i < data.length; i++) {
+			var o = data[i];
+			me.world[o.id] = {
+				object : o
+				//TODO: Mesh goes HERE!
+			};
+			console.log("init", o)
+		}
 	};
 
 	me.update = function(data) {
 		for(var i = 0; i < data.length; i++) {
 			var o = data[i];
-			me.world[o.id] = 0;
+			var wo = me.world[o.id];
+			
+			//We synchronize the properties on the object
+			//sent by the server
+			if(wo != null) {
+				for (key in o) {
+					wo[key] = o[key];
+				}
+				console.log("update", o)
+			}
+			else {
+				//TODO: Object has not been seen before
+				//request the object from server
+			}
 		}
 	};
 

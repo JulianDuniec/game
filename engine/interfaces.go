@@ -18,4 +18,5 @@ type WorldObject interface {
 		Returns true if any change was made
 	*/
 	Update(*World, time.Duration) bool
+	SyncObject() interface{}
 }
