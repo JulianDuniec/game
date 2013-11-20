@@ -67,7 +67,10 @@ func (ge *GameEngine) Loop() {
 
 	//Send the delta to all players
 	for k := range ge.players {
-		ge.players[k].client.WriteIfNotBusy(&server.ServerMessage{message})
+		p := ge.players[k]
+		if p.Active == true {
+			p.client.WriteIfNotBusy(&server.ServerMessage{message})
+		}
 	}
 }
 
@@ -110,6 +113,18 @@ func (ge *GameEngine) PrintRunStats(t int64) {
 	Implements interface ServerListener
 */
 func (ge *GameEngine) ClientConnected(c *server.Client) {
+	p := ge.AddNewPlayer(c)
+	log.Println("Added player", p, "sending state")
+	ge.SendWorldState(p)
+	p.Active = true
+}
+
+func (ge *GameEngine) SendWorldState(p *Player) {
+	message := GetInitMessage(ge.world)
+	p.client.WriteIfNotBusy(&server.ServerMessage{message})
+}
+
+func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
 		utils.Vector3{0.1, 0, 0},
@@ -118,10 +133,7 @@ func (ge *GameEngine) ClientConnected(c *server.Client) {
 	}
 	ge.players[p.client.Id] = p
 	ge.world.Add(p)
-	log.Println("Added player", p, "sending state")
-	message := GetInitMessage(ge.world)
-	p.client.WriteIfNotBusy(&server.ServerMessage{message})
-	p.Active = true
+	return p
 }
 
 /*
