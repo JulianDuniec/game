@@ -32,6 +32,10 @@ func (w *World) GetObjects() []WorldObject {
 	return o
 }
 
+func (w *World) Get(id string) WorldObject {
+	return w.objects[id]
+}
+
 func (w *World) Delete(o WorldObject) {
 	delete(w.objects, o.GetId())
 }

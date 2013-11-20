@@ -26,7 +26,7 @@ type PlayerSync struct {
 /*
 	Handle any user input
 */
-func (p *Player) ReactToMessage(m *server.ClientMessage) {
+func (p *Player) ReactToMessage(s string) {
 
 }
 
@@ -34,7 +34,13 @@ func (p *Player) ReactToMessage(m *server.ClientMessage) {
 	Implements interface WorldObject
 */
 func (p *Player) Update(w *World, dt time.Duration) bool {
-	p.Position = p.Position.Add(p.Velocity)
+	//We calculate the velocity in relation to the
+	//difference in time to make it accurate independent on
+	//different update frequencies
+	effectiveVelocity := p.Velocity.ScalarMultiply(dt.Seconds())
+
+	p.Position = p.Position.Add(effectiveVelocity)
+
 	return true
 }
 

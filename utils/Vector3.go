@@ -59,6 +59,14 @@ func (v Vector3) Normalize() Vector3 {
 	}
 }
 
+func (v Vector3) ScalarMultiply(x float64) Vector3 {
+	return Vector3{
+		v.X * x,
+		v.Y * x,
+		v.Z * x,
+	}
+}
+
 func (v Vector3) RotateX(angle float64) Vector3 {
 	cosRY := math.Cos(angle)
 	sinRY := math.Sin(angle)

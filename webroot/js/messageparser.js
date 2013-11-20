@@ -12,9 +12,18 @@ var MessageParser = function(options) {
 				return me.parseStateChangeMessage(body);
 			case 'i':
 				return me.parseObjectDatabase(body);
+			case 'n':
+				return me.parseReInitObject(body);
 			default:
 				log("E: Unparsable message " + s);
 		}
+	};
+
+	me.parseReInitObject = function(s) {
+		return {
+			type : 'reinit',
+			data : me.parseObjects(s)
+		};
 	};
 
 	me.parseObjectDatabase = function(s) {

@@ -23,6 +23,7 @@ var client = new Client({
 	},
 	onopen : function(client) {
 		log("Connection open")
+		engine.client = client;
 	},
 	onerror : function(client) {
 		document.getElementsByTagName("body")[0].innerHTML = "THERE WAS AN ERROR THERE WAS!"
@@ -37,16 +38,25 @@ client.init();
 
 
 /******* DEBUGUTILS **********/
-/*
-	Send anything to server...
-*/
-document.getElementById("send").addEventListener("click", function() {
-	client.send(document.getElementById("message").value)
-})
+function log() {
+	console.log(arguments)
+}
 
-
-function log(s) {
-	s = s + "<br />" + document.getElementById("log").innerHTML;
-	s = s.substring(0, 200);
-	document.getElementById("log").innerHTML = s;
+function dumpWorld(o) {
+	log(o)
+	var c, r, t;
+    t = document.createElement('table');
+	for(k in o) {
+		r = t.insertRow(0);
+		c = r.insertCell(0)
+		c.innerHTML = k;
+		c = r.insertCell(1)
+		c.innerHTML = JSON.stringify(o[k].object.p.x)
+		c = r.insertCell(1)
+		c.innerHTML = JSON.stringify(o[k].object.p.y)
+		c = r.insertCell(1)
+		c.innerHTML = JSON.stringify(o[k].object.p.z)
+	}
+	document.getElementsByTagName("body")[0].innerHTML = ""
+	document.getElementsByTagName("body")[0].appendChild(t);
 }

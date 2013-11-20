@@ -10,7 +10,7 @@ import (
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyMs = 1000
+	updateFrequencyMs = 100
 	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
@@ -121,7 +121,17 @@ func (ge *GameEngine) ClientConnected(c *server.Client) {
 
 func (ge *GameEngine) SendWorldState(p *Player) {
 	message := GetInitMessage(ge.world)
-	p.client.WriteIfNotBusy(&server.ServerMessage{message})
+	p.client.Write(&server.ServerMessage{message})
+}
+
+func (ge *GameEngine) SendSingle(p *Player, id string) {
+	o := ge.world.Get(id)
+	if o == nil {
+		//Object does not exist
+		return
+	}
+	message := GetSingleObjectMessage(o)
+	p.client.Write(&server.ServerMessage{message})
 }
 
 func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
@@ -151,6 +161,17 @@ func (ge *GameEngine) ClientDisconnected(c *server.Client) {
 	Implements interface ServerListener
 */
 func (ge *GameEngine) MessageReceived(m *server.ClientMessage) {
-	log.Println("Got message from player", ge.players[m.Client.Id])
-	ge.players[m.Client.Id].ReactToMessage(m)
+	p := ge.players[m.Client.Id]
+	log.Println("Got message from player", p)
+	t := m.Body[0:1]
+	b := m.Body[1:]
+
+	if t == "n" {
+		ge.SendSingle(p, b)
+		return
+	}
+	if t == "i" {
+		p.ReactToMessage(b)
+		return
+	}
 }
