@@ -4,10 +4,17 @@ var Renderer = function(options) {
 	me.init = function() {
 		me.initCamera();
 		me.initScene();
-		me.cubeDebug();
 		me.initRenderer();
+		me.initWorld();
 		me.animate();
 	};
+
+	me.initWorld = function() {
+		for(key in me.world) {
+			var o = me.world[key];
+			me.add(o);
+		}
+	}
 
 	me.animate = function() {
 		//TODO: Only if update, otherwise do 'prediction'
@@ -22,31 +29,26 @@ var Renderer = function(options) {
 		me.renderer.render( me.scene, me.camera );
 	};
 
-	me.deleteMesh = function(id) {
-		me.scene.remove(me.world[id].mesh)
-	}
+	me.delete = function(o) {
+		me.scene.remove(o.mesh)
+	};
 
-	me.cubeDebug = function() {
-		// Cube
-		for(key in me.world) {
-			var geometry = new THREE.CubeGeometry( 200, 200, 200 );
+	me.add = function(o) {
+		var geometry = new THREE.CubeGeometry( 200, 200, 200 );
 
-			for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+		for ( var i = 0; i < geometry.faces.length; i += 2 ) {
 
-				var hex = Math.random() * 0xffffff;
-				geometry.faces[ i ].color.setHex( hex );
-				geometry.faces[ i + 1 ].color.setHex( hex );
+			var hex = Math.random() * 0xffffff;
+			geometry.faces[ i ].color.setHex( hex );
+			geometry.faces[ i + 1 ].color.setHex( hex );
 
-			}
-
-			var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
-
-			cube = new THREE.Mesh( geometry, material );
-			cube.position = me.world[key].object.p;
-			me.scene.add( cube );
-			me.world[key].mesh = cube;
 		}
-		
+
+		var material = new THREE.MeshBasicMaterial({color: 0x000000});
+		cube = new THREE.Mesh( geometry, material );
+		cube.position = o.object.p;
+		me.scene.add( cube );
+		o.mesh = cube;
 	};
 
 	me.initScene = function() {
@@ -54,7 +56,7 @@ var Renderer = function(options) {
 	};
 
 	me.initCamera = function() {
-		me.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+		me.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 		me.camera.position.y = 150;
 		me.camera.position.z = 500;
 

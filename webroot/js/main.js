@@ -29,8 +29,12 @@ var engine = new Engine({
 		renderer.world = engine.world;
 	},
 
-	onDelete : function(id) {
-		renderer.deleteMesh(id);
+	onDelete : function(o) {
+		renderer.delete(o);
+	},
+
+	onAdd : function(o) {
+		renderer.add(o);
 	}
 });
 

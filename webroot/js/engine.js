@@ -10,20 +10,36 @@ var Engine = function(options) {
 		options.onInitialized();
 	};
 
+	/*
+		Add all objects to the world
+	*/
 	me.initItems = function(data) {
 		for(var i = 0; i < data.length; i++) {
 			var o = data[i];
 			me.world[o.id] = {
 				object : o.data
-				//TODO: Initialize Mesh HERE!
 			};
 		}
 	};
 
+	/*
+		An unseen object is added
+		to the world
+	*/
+	me.reInitItem = function(data) {
+		var o = {
+			object : data.data
+		}; 
+
+		me.world[data.id] = o;
+		options.onAdd(o)
+	}
+
 	me.deleteObject = function(id) {
 		log("Delete", id)
+		var o = me.world[id];
 		delete me.world[id];
-		options.onDeleted(id);
+		options.onDelete(o);
 	}
 
 	me.update = function(data) {
@@ -58,7 +74,7 @@ var Engine = function(options) {
 				me.client.send("a");
 				break;
 			case "reinit":
-				me.initItems(s.data);
+				me.reInitItem(s.data);
 				break;
 			case "change": 
 				me.update(s.data);

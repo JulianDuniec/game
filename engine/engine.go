@@ -4,13 +4,14 @@ import (
 	"github.com/julianduniec/game/server"
 	"github.com/julianduniec/game/utils"
 	"log"
+	"math/rand"
 	"time"
 )
 
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyMs = 100
+	updateFrequencyMs = 10
 	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
@@ -143,9 +144,12 @@ func (ge *GameEngine) SendSingle(p *Player, id string) {
 }
 
 func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
+	vx := (rand.Float64() * 100) - 50
+	vy := (rand.Float64() * 100) - 50
+	vz := (rand.Float64() * 20) - 100
 	p := &Player{
 		utils.Vector3{0, 0, 0},
-		utils.Vector3{10, 0, 0.1},
+		utils.Vector3{vx, vy, vz},
 		false, //Inactive at first
 		c,
 	}

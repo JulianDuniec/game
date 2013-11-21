@@ -13,9 +13,7 @@ func GetDeleteMessage(id string) string {
 }
 
 func GetSingleObjectMessage(o WorldObject) string {
-	wo := make([]WorldObject, 1)
-	wo[0] = o
-	return "n" + serializeWorldObjects(wo)
+	return "n" + serializeWorldObject(o)
 }
 
 func GetInitMessage(w *World) string {
@@ -36,8 +34,12 @@ func serializeWorldObjects(c []WorldObject) string {
 	s := ""
 	for _, o := range c {
 		//TODO: Handle error
-		b, _ := json.Marshal(&o)
-		s += o.GetId() + string(b[:]) + "|"
+		s += serializeWorldObject(o) + "|"
 	}
 	return s
+}
+
+func serializeWorldObject(wo WorldObject) string {
+	b, _ := json.Marshal(&wo)
+	return wo.GetId() + string(b[:])
 }

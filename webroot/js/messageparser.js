@@ -31,7 +31,7 @@ var MessageParser = function(options) {
 	me.parseReInitObject = function(s) {
 		return {
 			type : 'reinit',
-			data : me.parseObjects(s)
+			data : me.parseObject(s)
 		};
 	};
 
@@ -57,16 +57,20 @@ var MessageParser = function(options) {
 
 		for(var i = 0; i < objectStrings.length; i++) {
 			var data = objectStrings[i];
-			var id = data.substring(0, 12);
-			var body = JSON.parse(data.substring(12))
-			objects.push({
-				id : id,
-				data : body
-			});
+			objects.push(me.parseObject(objectStrings[i]));
 		}
 
 		return objects;
-	}
+	};
+
+	me.parseObject = function(s) {
+		var id = s.substring(0, 12);
+		var body = JSON.parse(s.substring(12))
+		return {
+			id : id,
+			data : body
+		};
+	};
 
 	return me;
 }
