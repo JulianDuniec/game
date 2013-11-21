@@ -145,7 +145,7 @@ func (ge *GameEngine) SendSingle(p *Player, id string) {
 func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
-		utils.Vector3{0, 0, 0.1},
+		utils.Vector3{10, 0, 0.1},
 		false, //Inactive at first
 		c,
 	}

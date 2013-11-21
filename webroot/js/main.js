@@ -11,8 +11,29 @@
 /*
 	Initializes a client and blocks until the connection is open
 */
-var engine = new Engine({});
+
 var messageParser = new MessageParser({});
+
+var renderer = new Renderer({});
+
+//Init game-engine.
+//Game engine will be initialized once
+//the client has sent the initial world state
+var engine = new Engine({
+	onInitialized : function() {
+		renderer.world = engine.world;
+		renderer.init();
+	},
+
+	onUpdate : function() {
+		renderer.world = engine.world;
+	},
+
+	onDelete : function(id) {
+		renderer.deleteMesh(id);
+	}
+});
+
 var client = new Client({
 	onmessage : function(client, s) {
 		/*
@@ -40,22 +61,4 @@ client.init();
 /******* DEBUGUTILS **********/
 function log() {
 	console.log(arguments)
-}
-
-function dumpWorld(o) {
-	var c, r, t;
-    t = document.createElement('table');
-	for(k in o) {
-		r = t.insertRow(0);
-		c = r.insertCell(0)
-		c.innerHTML = k;
-		c = r.insertCell(1)
-		c.innerHTML = JSON.stringify(o[k].object.p.x)
-		c = r.insertCell(1)
-		c.innerHTML = JSON.stringify(o[k].object.p.y)
-		c = r.insertCell(1)
-		c.innerHTML = JSON.stringify(o[k].object.p.z)
-	}
-	document.getElementsByTagName("body")[0].innerHTML = ""
-	document.getElementsByTagName("body")[0].appendChild(t);
 }

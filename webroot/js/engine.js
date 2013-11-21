@@ -6,7 +6,8 @@ var Engine = function(options) {
 	me.init = function(data) {
 		//Initial world setup
 		me.world = [];
-		me.initItems(data)
+		me.initItems(data);
+		options.onInitialized();
 	};
 
 	me.initItems = function(data) {
@@ -22,6 +23,7 @@ var Engine = function(options) {
 	me.deleteObject = function(id) {
 		log("Delete", id)
 		delete me.world[id];
+		options.onDeleted(id);
 	}
 
 	me.update = function(data) {
@@ -65,7 +67,8 @@ var Engine = function(options) {
 				me.deleteObject(s.data);
 				break;
 		}
-		dumpWorld(me.world);
+
+		options.onUpdate();
 	};
 
 	
