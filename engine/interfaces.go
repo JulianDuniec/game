@@ -6,9 +6,18 @@ import (
 )
 
 type WorldObject interface {
+	/*
+		Used for spatial indexing of objects (Not implemented though)
+	*/
 	GetPosition() utils.Vector3
+
 	GetType() string
+
+	/*
+		Unique identifier of object
+	*/
 	GetId() string
+
 	/*
 		Updates the state of the object
 		Supplies the state of the world and

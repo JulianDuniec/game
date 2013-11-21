@@ -14,7 +14,7 @@ var Engine = function(options) {
 			var o = data[i];
 			me.world[o.id] = {
 				object : o.data
-				//TODO: Mesh goes HERE!
+				//TODO: Initialize Mesh HERE!
 			};
 		}
 	};
