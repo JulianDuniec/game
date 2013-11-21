@@ -116,14 +116,22 @@ func (ge *GameEngine) ClientConnected(c *server.Client) {
 	p := ge.AddNewPlayer(c)
 	log.Println("Added player", p, "sending state")
 	ge.SendWorldState(p)
-	p.Active = true
 }
 
+/*
+	Sends the entire world state to a player,
+	used to initialize world
+*/
 func (ge *GameEngine) SendWorldState(p *Player) {
 	message := GetInitMessage(ge.world)
 	p.client.Write(&server.ServerMessage{message})
 }
 
+/*
+	Sends a single world object to a player,
+	used when a sync is sent to a player, that the
+	player has not seen before (ex. when new objects appear)
+*/
 func (ge *GameEngine) SendSingle(p *Player, id string) {
 	o := ge.world.Get(id)
 	if o == nil {
@@ -138,7 +146,6 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
 		utils.Vector3{0.1, 0, 0},
-		"Guest",
 		false, //Inactive at first
 		c,
 	}
@@ -153,8 +160,18 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 func (ge *GameEngine) ClientDisconnected(c *server.Client) {
 	p := ge.players[c.Id]
 	log.Println("Removing player")
-	delete(ge.players, c.Id)
-	ge.world.Delete(p)
+	ge.Delete(p.GetId())
+
+}
+
+func (ge *GameEngine) Delete(id string) {
+	delete(ge.players, id)
+	ge.world.Delete(id)
+	message := GetDeleteMessage(id)
+	for k := range ge.players {
+		p := ge.players[k]
+		p.client.Write(&server.ServerMessage{message})
+	}
 }
 
 /*
@@ -162,14 +179,26 @@ func (ge *GameEngine) ClientDisconnected(c *server.Client) {
 */
 func (ge *GameEngine) MessageReceived(m *server.ClientMessage) {
 	p := ge.players[m.Client.Id]
-	log.Println("Got message from player", p)
+	if len(m.Body) < 1 {
+		log.Println("Got invalid message from ", p.GetId())
+		return
+	}
+	log.Println("Got message from player", p.GetId())
 	t := m.Body[0:1]
 	b := m.Body[1:]
 
+	//Client want's to be active
+	if t == "a" {
+		p.Active = true
+		log.Println("Activating player", p.GetId())
+	}
+	//Client requests an object that
+	//it has not seen
 	if t == "n" {
 		ge.SendSingle(p, b)
 		return
 	}
+	//Client sends input
 	if t == "i" {
 		p.ReactToMessage(b)
 		return

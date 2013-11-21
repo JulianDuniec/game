@@ -8,6 +8,10 @@ func GetChangeMessage(c []WorldObject) string {
 	return "s" + serializeWorldSyncObjects(c)
 }
 
+func GetDeleteMessage(id string) string {
+	return "d" + id
+}
+
 func GetSingleObjectMessage(o WorldObject) string {
 	wo := make([]WorldObject, 1)
 	wo[0] = o

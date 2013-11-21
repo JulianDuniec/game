@@ -19,6 +19,11 @@ var Engine = function(options) {
 		}
 	};
 
+	me.deleteObject = function(id) {
+		log("Delete", id)
+		delete me.world[id];
+	}
+
 	me.update = function(data) {
 		for(var i = 0; i < data.length; i++) {
 			var o = data[i];
@@ -48,12 +53,16 @@ var Engine = function(options) {
 		switch(s.type) {
 			case "init":
 				me.init(s.data);
+				me.client.send("a");
 				break;
 			case "reinit":
 				me.initItems(s.data);
 				break;
 			case "change": 
 				me.update(s.data);
+				break;
+			case "delete":
+				me.deleteObject(s.data);
 				break;
 		}
 		dumpWorld(me.world);

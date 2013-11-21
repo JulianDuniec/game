@@ -9,7 +9,6 @@ import (
 type Player struct {
 	Position utils.Vector3 `json:"p"`
 	Velocity utils.Vector3 `json:"v"`
-	Name     string        `json:"n"`
 	Active   bool
 	client   *server.Client
 }
@@ -66,5 +65,8 @@ func (p *Player) GetType() string {
 }
 
 func (p *Player) SyncObject() interface{} {
-	return PlayerSync{p.Position, p.Velocity}
+	return PlayerSync{
+		p.Position,
+		p.Velocity,
+	}
 }

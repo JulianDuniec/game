@@ -18,5 +18,10 @@ type WorldObject interface {
 		Returns true if any change was made
 	*/
 	Update(*World, time.Duration) bool
+
+	/*
+		The object to be returned to client
+		indicating changes, as we don't want to send the entire object
+	*/
 	SyncObject() interface{}
 }

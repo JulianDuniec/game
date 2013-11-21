@@ -36,8 +36,8 @@ func (w *World) Get(id string) WorldObject {
 	return w.objects[id]
 }
 
-func (w *World) Delete(o WorldObject) {
-	delete(w.objects, o.GetId())
+func (w *World) Delete(id string) {
+	delete(w.objects, id)
 }
 
 func (w *World) Update(dt time.Duration) []WorldObject {

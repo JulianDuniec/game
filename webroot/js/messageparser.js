@@ -14,8 +14,17 @@ var MessageParser = function(options) {
 				return me.parseObjectDatabase(body);
 			case 'n':
 				return me.parseReInitObject(body);
+			case 'd':
+				return me.parseDeleteMessage(body);
 			default:
 				log("E: Unparsable message " + s);
+		}
+	};
+
+	me.parseDeleteMessage = function(s) {
+		return {
+			type : 'delete',
+			data : s
 		}
 	};
 
