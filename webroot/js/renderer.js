@@ -17,13 +17,25 @@ var Renderer = function(options) {
 	}
 
 	me.animate = function() {
-		//TODO: Only if update, otherwise do 'prediction'
+		if(me.previousAnimateTime ==null)
+			me.previousAnimateTime = new Date();
+		var diff = new Date().getTime() - me.previousAnimateTime.getTime();
+		log(diff/1000);
 		for(key in me.world) {
-			if(me.world[key].mesh == null) {
+			var o = me.world[key];
+			if(o.mesh == null) {
 				continue;
 			}
-			me.world[key].mesh.position = me.world[key].object.p;
+			if (o.lastRendered == null || o.lastRendered < o.latestSync) {
+				o.mesh.position = new THREE.Vector3(o.object.p.x, o.object.p.y, o.object.p.z);
+			} else {
+				var vel = new THREE.Vector3(o.object.v.x, o.object.v.y, o.object.v.z);
+				vel = vel.multiplyScalar(diff/1000);
+				o.mesh.position = o.mesh.position.add(vel)
+			}
+			o.lastRendered = new Date();
 		}
+		me.previousAnimateTime = new Date();
 		
 		requestAnimationFrame(me.animate);
 		me.renderer.render( me.scene, me.camera );

@@ -17,7 +17,9 @@ var Engine = function(options) {
 		for(var i = 0; i < data.length; i++) {
 			var o = data[i];
 			me.world[o.id] = {
-				object : o.data
+				object : o.data,
+				//Mark as updated
+				latestSync : new Date()
 			};
 		}
 	};
@@ -28,7 +30,8 @@ var Engine = function(options) {
 	*/
 	me.reInitItem = function(data) {
 		var o = {
-			object : data.data
+			object : data.data,
+			latestSync : new Date()
 		}; 
 
 		me.world[data.id] = o;
@@ -53,12 +56,12 @@ var Engine = function(options) {
 				for (key in o.data) {
 					wo.object[key] = o.data[key];
 				}
+				//Mark as changed
+				wo.latestSync = new Date();
 			}
 			else {
 				log("Not seen", o.id)
 				me.client.send("n"+o.id)
-				//TODO: Object has not been seen before
-				//request the object from server
 			}
 		}
 	};

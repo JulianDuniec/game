@@ -11,7 +11,7 @@ import (
 var (
 	maxNumPlayers = 10000
 	//Minimum nanoseconds between updates
-	updateFrequencyMs = 10
+	updateFrequencyMs = 1000
 	updateFrequencyNs = int64(updateFrequencyMs * 1e6)
 	//Used to calculate difference in
 	//time between each loop, in order to
