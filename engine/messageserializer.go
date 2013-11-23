@@ -25,7 +25,7 @@ func serializeWorldSyncObjects(c []WorldObject) string {
 	for _, o := range c {
 		//TODO: Handle error
 		b, _ := json.Marshal(o.SyncObject())
-		s += o.GetId() + string(b[:]) + "|"
+		s += o.GetId() + o.GetType() + string(b[:]) + "|"
 	}
 	return s
 }
@@ -41,5 +41,5 @@ func serializeWorldObjects(c []WorldObject) string {
 
 func serializeWorldObject(wo WorldObject) string {
 	b, _ := json.Marshal(&wo)
-	return wo.GetId() + string(b[:])
+	return wo.GetId() + wo.GetType() + string(b[:])
 }

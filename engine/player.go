@@ -3,6 +3,7 @@ package engine
 import (
 	"github.com/julianduniec/game/server"
 	"github.com/julianduniec/game/utils"
+	"math/rand"
 	"time"
 )
 
@@ -33,6 +34,13 @@ func (p *Player) ReactToMessage(s string) {
 	Implements interface WorldObject
 */
 func (p *Player) Update(w *World, dt time.Duration) bool {
+	if rand.Float64() > 0.99 {
+		vx := (rand.Float64() * 100) - 50
+		vy := (rand.Float64() * 100) - 50
+		vz := (rand.Float64() * 100) - 50
+		p.Velocity = utils.Vector3{vx, vy, vz}
+	}
+
 	//We calculate the velocity in relation to the
 	//difference in time to make it accurate independent on
 	//different update frequencies
@@ -61,7 +69,7 @@ func (p *Player) GetId() string {
 	Implements interface WorldObject
 */
 func (p *Player) GetType() string {
-	return "player"
+	return "001"
 }
 
 func (p *Player) SyncObject() interface{} {

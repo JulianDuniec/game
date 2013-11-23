@@ -18,6 +18,8 @@ var Engine = function(options) {
 			var o = data[i];
 			me.world[o.id] = {
 				object : o.data,
+				id : o.id,
+				type : o.type,
 				//Mark as updated
 				latestSync : new Date()
 			};
@@ -30,7 +32,9 @@ var Engine = function(options) {
 	*/
 	me.reInitItem = function(data) {
 		var o = {
+			id : data.id,
 			object : data.data,
+			type : data.type,
 			latestSync : new Date()
 		}; 
 

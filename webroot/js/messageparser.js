@@ -65,9 +65,11 @@ var MessageParser = function(options) {
 
 	me.parseObject = function(s) {
 		var id = s.substring(0, 12);
-		var body = JSON.parse(s.substring(12))
+		var type = s.substring(12, 15);
+		var body = JSON.parse(s.substring(15))
 		return {
 			id : id,
+			type : type,
 			data : body
 		};
 	};
