@@ -31,11 +31,11 @@ var Renderer = function(options) {
 		// create the mesh based on geometry and material
 		var mesh  = new THREE.Mesh(geometry, material)
 		me.scene.add(mesh);
-		for(var i = 0; i < 100; i++) {
+		for(var i = 1; i < 10; i++) {
 			cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200 ), new THREE.MeshNormalMaterial() );
-			cube.position.y = i * 250
-			cube.position.z = i * 250
-			cube.position.x = i * 250 * (i%2 == 0? -1 : 1)
+			cube.position.y = -i * 450
+			cube.position.z = i * 950
+			cube.position.x = i * 150 * (i%2 == 0? -1 : 1)
 			me.scene.add(cube);
 		}
 		
@@ -45,6 +45,10 @@ var Renderer = function(options) {
 		if(me.previousAnimateTime ==null)
 			me.previousAnimateTime = new Date();
 		var diff = (new Date().getTime() - me.previousAnimateTime.getTime()) / 1000;
+		
+		me.onAnimate && me.onAnimate();
+
+		//Update all objects in world
 		for(key in me.world) {
 			var o = me.world[key];
 			if(o.clientObject.mesh == null) {
@@ -53,6 +57,7 @@ var Renderer = function(options) {
 			o.clientObject.update(diff, o);
 			
 		}
+
 		me.previousAnimateTime = new Date();
 		
 		requestAnimationFrame(me.animate);
@@ -84,17 +89,16 @@ var Renderer = function(options) {
 		me.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 99999999 );
 		me.camera.position.set(
 			me.player.object.p.x, 
-			me.player.object.p.y, 
-			me.player.object.p.z - 500);
+			me.player.object.p.y + 100, 
+			me.player.object.p.z - 800);
 	};
 
 	me.updateCameraPosition = function() {
 		if(me.player.clientObject.mesh == null) return;
 		me.camera.position.set(
 			me.player.clientObject.mesh.position.x, 
-			me.player.clientObject.mesh.position.y, 
-			me.player.clientObject.mesh.position.z - 500);
-		me.camera.useQuaternion = true;
+			me.player.clientObject.mesh.position.y + 100, 
+			me.player.clientObject.mesh.position.z - 800);
 		me.camera.lookAt(me.player.clientObject.mesh.position);
 	};
 

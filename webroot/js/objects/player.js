@@ -47,7 +47,7 @@ var Player = function(options) {
 			me.mesh.rotation.z = dr.z;
 		}
 		me.lastRendered = new Date();
-	}
+	};
 
 	return me;
 }

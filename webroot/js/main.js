@@ -16,6 +16,7 @@ var messageParser = new MessageParser({});
 
 var renderer = new Renderer({});
 
+
 //Init game-engine.
 //Game engine will be initialized once
 //the client has sent the initial world state
@@ -24,6 +25,14 @@ var engine = new Engine({
 		renderer.world = engine.world;
 		renderer.player = engine.getPlayer();
 		renderer.init();
+		var controller = new Controller({
+			player : engine.getPlayer(),
+			engine : engine
+		});
+		renderer.onAnimate = function() {
+			controller.gather();
+		};
+		controller.init();
 	},
 
 	onUpdate : function() {
