@@ -25,11 +25,13 @@ var Player = function(options) {
 
 	me.update = function(diff, o) {
 		options = o;
-		if (me.lastRendered == null || me.lastRendered < me.latestSync) {
+		if (me.lastRendered == null || me.previousSync == null || me.previousSync < me.latestSync) {
 			me.mesh.position = new THREE.Vector3(options.object.p.x, options.object.p.y, options.object.p.z);
 			me.mesh.rotation.x = options.object.r.x;
 			me.mesh.rotation.y = options.object.r.y;
 			me.mesh.rotation.z = options.object.r.z;
+			
+			me.previousSync = me.latestSync;
 		} else {
 			//Calculate change in position
 			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z).multiplyScalar(diff);

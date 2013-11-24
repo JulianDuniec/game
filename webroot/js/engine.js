@@ -11,7 +11,12 @@ var Engine = function(options) {
 	};
 
 	me.handleInput = function(input) {
+		if(JSON.stringify(input) == JSON.stringify(me.previousInput)) {
+			return;
+		}
+		log("Sending")
 		me.client.send("i"+JSON.stringify(input));
+		me.previousInput = input;
 	};
 
 	me.setPlayer = function(id) {

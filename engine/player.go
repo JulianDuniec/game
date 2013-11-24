@@ -9,9 +9,11 @@ import (
 )
 
 type Input struct {
-	TargetX float64 `json:"x"`
-	TargetY float64 `json:"y"`
-	SpeedUp bool    `json:"speedUp"`
+	Up      bool `json:"u"`
+	Down    bool `json:"d"`
+	Left    bool `json:"l"`
+	Right   bool `json:"r"`
+	SpeedUp bool `json:"s"`
 }
 
 type Player struct {
@@ -29,8 +31,10 @@ type Player struct {
 	to sync updates to client
 */
 type PlayerSync struct {
-	Position utils.Vector3 `json:"p"`
-	Velocity utils.Vector3 `json:"v"`
+	Position         utils.Vector3 `json:"p"`
+	Velocity         utils.Vector3 `json:"v"`
+	Rotation         utils.Vector3 `json:"r"`
+	RotationVelocity utils.Vector3 `json:"rv`
 }
 
 /*
@@ -54,10 +58,25 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 		return false
 	}
 	if p.input.SpeedUp {
-		log.Println("Speeding up")
 		p.Velocity.Z += 5
 	} else if p.Velocity.Z >= 0 {
 		p.Velocity.Z -= 5
+	}
+
+	if p.input.Left {
+		p.RotationVelocity.Z = -1
+	} else if p.input.Right {
+		p.RotationVelocity.Z = 1
+	} else {
+		p.RotationVelocity.Z = 0
+	}
+
+	if p.input.Up {
+		p.RotationVelocity.X = 1
+	} else if p.input.Down {
+		p.RotationVelocity.X = -1
+	} else {
+		p.RotationVelocity.X = 0
 	}
 	//We calculate the velocity in relation to the
 	//difference in time to make it accurate independent on
@@ -97,5 +116,7 @@ func (p *Player) SyncObject() interface{} {
 	return PlayerSync{
 		p.Position,
 		p.Velocity,
+		p.Rotation,
+		p.RotationVelocity,
 	}
 }
