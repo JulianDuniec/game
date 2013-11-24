@@ -25,8 +25,8 @@ var Renderer = function(options) {
 		var light = new THREE.PointLight(0xffffff);
 		light.position.set(0,0,100);
 		me.scene.add(light);
-		var ambientLight = new THREE.AmbientLight(0xdddddd);
-		me.scene.add(ambientLight);
+		var ambientLight	= new THREE.AmbientLight( 0xff0000 )
+		me.scene.add( ambientLight )
 
 		// create the geometry sphere
 		var geometry  = new THREE.SphereGeometry(99999, 32, 32)
@@ -63,8 +63,11 @@ var Renderer = function(options) {
 
 	me.add = function(o) {
 		o.clientObject = new TypeMap[o.type](o);
-		o.clientObject.createMesh();
-		me.scene.add( o.clientObject.mesh );
+		o.clientObject.createMesh(function() {
+			console.log("Adding", o)
+			me.scene.add( o.clientObject.mesh );
+		});
+		
 	};
 
 

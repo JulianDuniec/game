@@ -34,11 +34,15 @@ func (p *Player) ReactToMessage(s string) {
 	Implements interface WorldObject
 */
 func (p *Player) Update(w *World, dt time.Duration) bool {
+	if !p.Active {
+		return false
+	}
+
 	if rand.Float64() > 0.99 {
 		vx := (rand.Float64() * 100) - 50
 		vy := (rand.Float64() * 100) - 50
 		vz := (rand.Float64() * 100) - 50
-		p.Velocity = utils.Vector3{vx, vy, vz}
+		p.Velocity = p.Velocity.Add(utils.Vector3{vx, vy, vz})
 	}
 
 	//We calculate the velocity in relation to the
