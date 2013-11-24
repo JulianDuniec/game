@@ -10,6 +10,10 @@ var Engine = function(options) {
 		options.onInitialized();
 	};
 
+	me.handleInput = function(input) {
+		me.client.send("i"+JSON.stringify(input));
+	};
+
 	me.setPlayer = function(id) {
 		me.playerId = id;
 	};
@@ -73,7 +77,7 @@ var Engine = function(options) {
 			}
 			else {
 				log("Not seen", o.id)
-				me.client.send("n"+o.id)
+				me.client.send("n"+o.id);
 			}
 		}
 	};

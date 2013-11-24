@@ -16,6 +16,9 @@ var messageParser = new MessageParser({});
 
 var renderer = new Renderer({});
 
+var controller = new Controller({
+
+		});
 
 //Init game-engine.
 //Game engine will be initialized once
@@ -25,12 +28,10 @@ var engine = new Engine({
 		renderer.world = engine.world;
 		renderer.player = engine.getPlayer();
 		renderer.init();
-		var controller = new Controller({
-			player : engine.getPlayer(),
-			engine : engine
-		});
+		
 		renderer.onAnimate = function() {
-			controller.gather();
+			var input = controller.gather();
+			engine.handleInput(input);
 		};
 		controller.init();
 	},

@@ -1,10 +1,18 @@
 package engine
 
 import (
+	"encoding/json"
 	"github.com/julianduniec/game/server"
 	"github.com/julianduniec/game/utils"
+	"log"
 	"time"
 )
+
+type Input struct {
+	TargetX float64 `json:"x"`
+	TargetY float64 `json:"y"`
+	SpeedUp bool    `json:"speedUp"`
+}
 
 type Player struct {
 	Position         utils.Vector3 `json:"p"`
@@ -13,6 +21,7 @@ type Player struct {
 	RotationVelocity utils.Vector3 `json:"rv"`
 	Active           bool
 	client           *server.Client
+	input            Input
 }
 
 /*
@@ -28,7 +37,13 @@ type PlayerSync struct {
 	Handle any user input
 */
 func (p *Player) ReactToMessage(s string) {
-
+	var input Input
+	err := json.Unmarshal([]byte(s), &input)
+	if err != nil {
+		log.Println("Error message " + s)
+		return
+	}
+	p.input = input
 }
 
 /*
@@ -38,7 +53,12 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 	if !p.Active {
 		return false
 	}
-
+	if p.input.SpeedUp {
+		log.Println("Speeding up")
+		p.Velocity.Z += 5
+	} else if p.Velocity.Z >= 0 {
+		p.Velocity.Z -= 5
+	}
 	//We calculate the velocity in relation to the
 	//difference in time to make it accurate independent on
 	//different update frequencies

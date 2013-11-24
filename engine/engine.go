@@ -151,6 +151,7 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 		utils.Vector3{0, 0, 0},
 		false, //Inactive at first
 		c,
+		Input{0, 0, false}, //Input
 	}
 	ge.players[p.client.Id] = p
 	ge.world.Add(p)
@@ -187,7 +188,6 @@ func (ge *GameEngine) MessageReceived(m *server.ClientMessage) {
 		log.Println("Got invalid message from ", p.GetId())
 		return
 	}
-	log.Println("Got message from player", p.GetId())
 	t := m.Body[0:1]
 	b := m.Body[1:]
 
