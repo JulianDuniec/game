@@ -22,6 +22,7 @@ var renderer = new Renderer({});
 var engine = new Engine({
 	onInitialized : function() {
 		renderer.world = engine.world;
+		renderer.player = engine.getPlayer();
 		renderer.init();
 	},
 

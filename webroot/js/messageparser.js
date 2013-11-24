@@ -8,6 +8,8 @@ var MessageParser = function(options) {
 		var typeIndicator = s[0];
 		var body = s.substring(1);
 		switch(typeIndicator) {
+			case 'q':
+				return me.parseIdentifierMessage(body);
 			case 's':
 				return me.parseStateChangeMessage(body);
 			case 'i':
@@ -18,6 +20,13 @@ var MessageParser = function(options) {
 				return me.parseDeleteMessage(body);
 			default:
 				log("E: Unparsable message " + s);
+		}
+	};
+
+	me.parseIdentifierMessage = function(s) {
+		return  {
+			type : 'identifier',
+			data : s
 		}
 	};
 

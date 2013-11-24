@@ -6,11 +6,11 @@ var Renderer = function(options) {
 	var me = this;
 
 	me.init = function() {
-		me.initCamera();
 		me.initScene();
 		me.initRenderer();
 		me.initSurroundings();
 		me.initWorld();
+		me.initCamera();
 		me.animate();
 	};
 
@@ -22,14 +22,8 @@ var Renderer = function(options) {
 	};
 
 	me.initSurroundings = function() {
-		var light = new THREE.PointLight(0xffffff);
-		light.position.set(0,0,100);
-		me.scene.add(light);
-		var ambientLight	= new THREE.AmbientLight( 0xff0000 )
-		me.scene.add( ambientLight )
-
 		// create the geometry sphere
-		var geometry  = new THREE.SphereGeometry(99999, 32, 32)
+		var geometry  = new THREE.SphereGeometry(999999, 32, 32)
 		// create the material, using a texture of startfield
 		var material  = new THREE.MeshBasicMaterial()
 		material.map   = THREE.ImageUtils.loadTexture('images/galaxy_starfield.png')
@@ -37,6 +31,14 @@ var Renderer = function(options) {
 		// create the mesh based on geometry and material
 		var mesh  = new THREE.Mesh(geometry, material)
 		me.scene.add(mesh);
+		for(var i = 0; i < 100; i++) {
+			cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200 ), new THREE.MeshNormalMaterial() );
+			cube.position.y = i * 250
+			cube.position.z = i * 250
+			cube.position.x = i * 250 * (i%2 == 0? -1 : 1)
+			me.scene.add(cube);
+		}
+		
 	};
 
 	me.animate = function() {
@@ -54,6 +56,9 @@ var Renderer = function(options) {
 		me.previousAnimateTime = new Date();
 		
 		requestAnimationFrame(me.animate);
+
+		me.updateCameraPosition();
+
 		me.renderer.render( me.scene, me.camera );
 	};
 
@@ -72,14 +77,25 @@ var Renderer = function(options) {
 
 
 	me.initScene = function() {
-		me.scene = new THREE.Scene();  
-		
+		me.scene = new THREE.Scene();  		
 	};
 
 	me.initCamera = function() {
 		me.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 99999999 );
-		me.camera.position.y = 150;
-		me.camera.position.z = 500;
+		me.camera.position.set(
+			me.player.object.p.x, 
+			me.player.object.p.y, 
+			me.player.object.p.z - 500);
+	};
+
+	me.updateCameraPosition = function() {
+		if(me.player.clientObject.mesh == null) return;
+		me.camera.position.set(
+			me.player.clientObject.mesh.position.x, 
+			me.player.clientObject.mesh.position.y, 
+			me.player.clientObject.mesh.position.z - 500);
+		me.camera.useQuaternion = true;
+		me.camera.lookAt(me.player.clientObject.mesh.position);
 	};
 
 	me.initRenderer = function() {

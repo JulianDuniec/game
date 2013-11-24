@@ -10,6 +10,14 @@ var Engine = function(options) {
 		options.onInitialized();
 	};
 
+	me.setPlayer = function(id) {
+		me.playerId = id;
+	};
+
+	me.getPlayer = function() {
+		return me.world[me.playerId];
+	}
+
 	/*
 		Add all objects to the world
 	*/
@@ -88,6 +96,9 @@ var Engine = function(options) {
 				break;
 			case "delete":
 				me.deleteObject(s.data);
+				break;
+			case "identifier":
+				me.setPlayer(s.data);
 				break;
 		}
 

@@ -1,7 +1,6 @@
 var Player = function(options) {
 	var me = this;
 	me.createMesh = function(callback) {
-		console.log(options.object)
 		var loader	= new THREE.OBJMTLLoader();
 		loader.addEventListener('load', function( event ){
 			var object3d	= event.content

@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 )
 
+func GetIdentifierMessage(id string) string {
+	return "q" + id
+}
+
 func GetChangeMessage(c []WorldObject) string {
 	return "s" + serializeWorldSyncObjects(c)
 }

@@ -144,19 +144,17 @@ func (ge *GameEngine) SendSingle(p *Player, id string) {
 }
 
 func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
-	vx := (rand.Float64() * 100) - 50
-	vy := (rand.Float64() * 100) - 50
-	vz := (rand.Float64() * 20) - 100
 	p := &Player{
+		utils.Vector3{rand.Float64() * 100, rand.Float64() * 100, rand.Float64() * 100},
 		utils.Vector3{0, 0, 0},
-		utils.Vector3{vx, vy, vz},
 		utils.Vector3{0, 0, 0},
-		utils.Vector3{1, 1, 1},
+		utils.Vector3{0, 0, 0},
 		false, //Inactive at first
 		c,
 	}
 	ge.players[p.client.Id] = p
 	ge.world.Add(p)
+	c.Write(&server.ServerMessage{GetIdentifierMessage(p.GetId())})
 	return p
 }
 
