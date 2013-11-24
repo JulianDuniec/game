@@ -8,10 +8,12 @@ import (
 )
 
 type Player struct {
-	Position utils.Vector3 `json:"p"`
-	Velocity utils.Vector3 `json:"v"`
-	Active   bool
-	client   *server.Client
+	Position         utils.Vector3 `json:"p"`
+	Velocity         utils.Vector3 `json:"v"`
+	Rotation         utils.Vector3 `json:"r"`
+	RotationVelocity utils.Vector3 `json:"rv"`
+	Active           bool
+	client           *server.Client
 }
 
 /*
@@ -51,6 +53,9 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 	effectiveVelocity := p.Velocity.ScalarMultiply(dt.Seconds())
 
 	p.Position = p.Position.Add(effectiveVelocity)
+
+	effectiveRotationVelocity := p.RotationVelocity.ScalarMultiply(dt.Seconds())
+	p.Rotation = p.Rotation.Add(effectiveRotationVelocity)
 
 	return true
 }

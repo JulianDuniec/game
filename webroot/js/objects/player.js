@@ -1,6 +1,7 @@
 var Player = function(options) {
 	var me = this;
 	me.createMesh = function(callback) {
+		console.log(options.object)
 		var loader	= new THREE.OBJMTLLoader();
 		loader.addEventListener('load', function( event ){
 			var object3d	= event.content
@@ -12,6 +13,9 @@ var Player = function(options) {
 			})
 			me.mesh = object3d;
 			me.mesh.position = new THREE.Vector3(options.object.p.x, options.object.p.y, options.object.p.z);
+			me.mesh.rotation.x = options.object.r.x;
+			me.mesh.rotation.y = options.object.r.y;
+			me.mesh.rotation.z = options.object.r.z;
 			callback();
 		});
 
@@ -24,13 +28,24 @@ var Player = function(options) {
 		options = o;
 		if (me.lastRendered == null || me.lastRendered < me.latestSync) {
 			me.mesh.position = new THREE.Vector3(options.object.p.x, options.object.p.y, options.object.p.z);
+			me.mesh.rotation.x = options.object.r.x;
+			me.mesh.rotation.y = options.object.r.y;
+			me.mesh.rotation.z = options.object.r.z;
 		} else {
-			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z);
-			vel = vel.multiplyScalar(diff);
+			//Calculate change in position
+			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z).multiplyScalar(diff);
 			me.mesh.position = me.mesh.position.add(vel);
-			me.mesh.rotation.x += 0.01;
-			me.mesh.rotation.y += 0.01;
-			me.mesh.rotation.z += 0.01;
+			
+			//Calculate change in rotation
+			var rotationVel = 
+				new THREE.Vector3(options.object.rv.x, options.object.rv.y, options.object.rv.z).multiplyScalar(diff);
+			var rotation = new THREE.Vector3(me.mesh.rotation.x, me.mesh.rotation.y, me.mesh.rotation.z);
+			
+			//Calculate the change in rotation
+			var dr = rotation.add(rotationVel);
+			me.mesh.rotation.x = dr.x;
+			me.mesh.rotation.y = dr.y;
+			me.mesh.rotation.z = dr.z;
 		}
 		me.lastRendered = new Date();
 	}

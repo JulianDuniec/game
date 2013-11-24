@@ -150,6 +150,8 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 	p := &Player{
 		utils.Vector3{0, 0, 0},
 		utils.Vector3{vx, vy, vz},
+		utils.Vector3{0, 0, 0},
+		utils.Vector3{1, 1, 1},
 		false, //Inactive at first
 		c,
 	}
