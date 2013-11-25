@@ -17,9 +17,9 @@ var Player = function(options) {
 			me.mesh.rotation.z = options.object.r.z;
 			callback();
 		});
-
-		var objUrl	= 'js/models/SpaceFighter02/SpaceFighter02.obj';
-		var mtlUrl	= 'js/models/SpaceFighter02/SpaceFighter02.mtl';
+		var name = "SpaceFighter02";
+		var objUrl	= 'js/models/'+name+'/'+name+'.obj';
+		var mtlUrl	= 'js/models/'+name+'/'+name+'.mtl';
 		loader.load(objUrl, mtlUrl);	
 	};
 
