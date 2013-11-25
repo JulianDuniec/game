@@ -9,11 +9,11 @@ import (
 )
 
 type Input struct {
-	Up      bool `json:"u"`
-	Down    bool `json:"d"`
-	Left    bool `json:"l"`
-	Right   bool `json:"r"`
-	SpeedUp bool `json:"s"`
+	X       float64 `json:"x"`
+	Y       float64 `json:"y"`
+	Left    bool    `json:"l"`
+	Right   bool    `json:"r"`
+	SpeedUp bool    `json:"s"`
 }
 
 type Player struct {
@@ -57,27 +57,34 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 	if !p.Active {
 		return false
 	}
+
+	//TODO: Should be in the direction that the ship is rotating
 	if p.input.SpeedUp {
 		p.Velocity.Z += 5
 	} else if p.Velocity.Z >= 0 {
 		p.Velocity.Z -= 5
 	}
 
+	p.Rotation.X = p.input.Y / 500
+	p.Rotation.Z = p.input.X / 1000
+	p.Rotation.Y = -p.input.X / 1000
+	rotateStep := 1.5
 	if p.input.Left {
-		p.RotationVelocity.Z = -1
+		p.RotationVelocity.Z -= rotateStep
 	} else if p.input.Right {
-		p.RotationVelocity.Z = 1
-	} else {
-		p.RotationVelocity.Z = 0
+		p.RotationVelocity.Z += rotateStep
+	} else if p.RotationVelocity.Z < 0 {
+		p.RotationVelocity.Z += rotateStep
+		if p.RotationVelocity.Z > -rotateStep && p.RotationVelocity.Z < 0 {
+			p.RotationVelocity.Z = 0
+		}
+	} else if p.RotationVelocity.Z > 0 {
+		p.RotationVelocity.Z -= rotateStep
+		if p.RotationVelocity.Z < rotateStep && p.RotationVelocity.Z > 0 {
+			p.RotationVelocity.Z = 0
+		}
 	}
 
-	if p.input.Up {
-		p.RotationVelocity.X = 1
-	} else if p.input.Down {
-		p.RotationVelocity.X = -1
-	} else {
-		p.RotationVelocity.X = 0
-	}
 	//We calculate the velocity in relation to the
 	//difference in time to make it accurate independent on
 	//different update frequencies

@@ -14,28 +14,25 @@ var Controller = function(options) {
 	me.init = function() {
 		//Gather keyboard input
 		window.onkeydown = function(e) {
-			if(e.keyCode == 38) {
-				me.upPressed = true;
-			} else if(e.keyCode == 40) {
-				me.downPressed = true;
-			} else if(e.keyCode == 37) {
+			//A
+			if(e.keyCode == 65) {
 				me.leftPressed = true;
-			} else if(e.keyCode == 39) {
+			} 
+			//D
+			else if(e.keyCode == 68) {
 				me.rightPressed = true;
-			} else if(e.keyCode == 32) {
+			} 
+			//Space
+			else if(e.keyCode == 32) {
 				me.spacePressed = true;
 			}
 		}; 
 
 		//Reset key-controls
 		window.onkeyup = function(e) {
-			if(e.keyCode == 38) {
-				me.upPressed = false;
-			} else if(e.keyCode == 40) {
-				me.downPressed = false;
-			} else if(e.keyCode == 37) {
+			if(e.keyCode == 65) {
 				me.leftPressed = false;
-			} else if(e.keyCode == 39) {
+			} else if(e.keyCode == 68) {
 				me.rightPressed = false;
 			} else if(e.keyCode == 32) {
 				me.spacePressed = false;
@@ -54,8 +51,8 @@ var Controller = function(options) {
 		var dy = me.mouseY - (window.innerHeight / 2);
 		
 		return {
-			u : me.upPressed,
-			d : me.downPressed,
+			x : dx,
+			y : dy,
 			l : me.leftPressed,
 			r : me.rightPressed,
 			s : me.spacePressed

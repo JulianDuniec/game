@@ -90,7 +90,7 @@ var Renderer = function(options) {
 		me.camera.position.set(
 			me.player.object.p.x, 
 			me.player.object.p.y + 100, 
-			me.player.object.p.z - 800);
+			me.player.object.p.z - 1000);
 	};
 
 	me.updateCameraPosition = function() {
@@ -98,7 +98,7 @@ var Renderer = function(options) {
 		me.camera.position.set(
 			me.player.clientObject.mesh.position.x, 
 			me.player.clientObject.mesh.position.y + 100, 
-			me.player.clientObject.mesh.position.z - 800);
+			me.player.clientObject.mesh.position.z - 1000);
 		me.camera.lookAt(me.player.clientObject.mesh.position);
 	};
 
