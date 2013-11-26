@@ -98,13 +98,14 @@ var Renderer = function(options) {
 		me.camera.position.set(
 			me.player.clientObject.mesh.position.x, 
 			me.player.clientObject.mesh.position.y, 
-			me.player.clientObject.mesh.position.z + 1000);
-
+			me.player.clientObject.mesh.position.z - 1000);
+		
+		var pr = new THREE.Euler(me.player.clientObject.mesh.rotation.x, me.player.clientObject.mesh.rotation.y + Math.PI, me.player.clientObject.mesh.rotation.z, me.player.clientObject.mesh.rotation.order);
 		var pq = new THREE.Quaternion();
-		pq.copy(me.player.clientObject.mesh.quaternion);
-        var newQuaternion = new THREE.Quaternion();
+		pq.setFromEuler(pr)
+		var newQuaternion = new THREE.Quaternion();
         THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.1);
-        me.camera.quaternion = newQuaternion;
+        me.camera.quaternion = newQuaternion; 
 	};
 
 	me.initRenderer = function() {
