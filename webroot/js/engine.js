@@ -14,7 +14,6 @@ var Engine = function(options) {
 		if(JSON.stringify(input) == JSON.stringify(me.previousInput)) {
 			return;
 		}
-		log("Sending")
 		me.client.send("i"+JSON.stringify(input));
 		me.previousInput = input;
 	};

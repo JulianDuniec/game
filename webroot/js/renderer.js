@@ -97,9 +97,14 @@ var Renderer = function(options) {
 		if(me.player.clientObject.mesh == null) return;
 		me.camera.position.set(
 			me.player.clientObject.mesh.position.x, 
-			me.player.clientObject.mesh.position.y + 100, 
-			me.player.clientObject.mesh.position.z - 1000);
-		me.camera.lookAt(me.player.clientObject.mesh.position);
+			me.player.clientObject.mesh.position.y, 
+			me.player.clientObject.mesh.position.z + 1000);
+
+		var pq = new THREE.Quaternion();
+		pq.copy(me.player.clientObject.mesh.quaternion);
+        var newQuaternion = new THREE.Quaternion();
+        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.1);
+        me.camera.quaternion = newQuaternion;
 	};
 
 	me.initRenderer = function() {
