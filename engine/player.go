@@ -60,9 +60,9 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 
 	//TODO: Should be in the direction that the ship is rotating
 	if p.input.SpeedUp {
-		p.Velocity.Z += 5
+		p.Velocity.Z += 15
 	} else if p.Velocity.Z >= 0 {
-		p.Velocity.Z -= 5
+		p.Velocity.Z -= 15
 	}
 
 	p.Rotation.X = p.input.Y / 500

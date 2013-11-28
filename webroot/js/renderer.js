@@ -31,12 +31,18 @@ var Renderer = function(options) {
 		// create the mesh based on geometry and material
 		var mesh  = new THREE.Mesh(geometry, material)
 		me.scene.add(mesh);
-		for(var i = 1; i < 10; i++) {
-			cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200 ), new THREE.MeshNormalMaterial() );
-			cube.position.y = -i * 450
-			cube.position.z = i * 950
-			cube.position.x = i * 150 * (i%2 == 0? -1 : 1)
-			me.scene.add(cube);
+		for(var i = 1; i < 20; i++) {
+			for(var j = 0; j < 5; j++) {
+				for(var k = 0; k < 5; k++) {
+					cube = new THREE.Mesh( new THREE.CubeGeometry( 30+i, 30+i, 30+i ), new THREE.MeshNormalMaterial() );
+					cube.position.y = k * 950 - 1000
+					cube.position.z = i * 950 - 1000
+					cube.position.x = j * 950 - 1000
+					me.scene.add(cube);
+				}
+			
+			}
+			
 		}
 		
 	};
@@ -91,6 +97,14 @@ var Renderer = function(options) {
 			me.player.object.p.x, 
 			me.player.object.p.y + 100, 
 			me.player.object.p.z - 1000);
+		var pr = new THREE.Euler(
+			me.player.object.r.x, 
+			me.player.object.r.y + Math.PI, 
+			-me.player.object.r.z, 
+			"XYZ");
+		var pq = new THREE.Quaternion();
+		pq.setFromEuler(pr)
+        me.camera.quaternion = pq; 
 	};
 
 	me.updateCameraPosition = function() {
@@ -100,11 +114,16 @@ var Renderer = function(options) {
 			me.player.clientObject.mesh.position.y, 
 			me.player.clientObject.mesh.position.z - 1000);
 		
-		var pr = new THREE.Euler(me.player.clientObject.mesh.rotation.x, me.player.clientObject.mesh.rotation.y + Math.PI, me.player.clientObject.mesh.rotation.z, me.player.clientObject.mesh.rotation.order);
+		var pr = new THREE.Euler(
+			me.player.clientObject.mesh.rotation.x, 
+			me.player.clientObject.mesh.rotation.y + Math.PI, 
+			-me.player.clientObject.mesh.rotation.z, 
+			me.player.clientObject.mesh.rotation.order);
+
 		var pq = new THREE.Quaternion();
 		pq.setFromEuler(pr)
 		var newQuaternion = new THREE.Quaternion();
-        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.1);
+        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.7);
         me.camera.quaternion = newQuaternion; 
 	};
 

@@ -40,8 +40,8 @@ var Controller = function(options) {
 		};
 
 		window.onmousemove = function(e) {
-			me.mouseX = e.clientX;
-			me.mouseY = e.clientY;
+			me.mouseX = Math.round(e.clientX/5) * 5;
+			me.mouseY = Math.round(e.clientY/5) * 5;
 		};
 	};
 

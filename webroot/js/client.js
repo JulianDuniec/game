@@ -29,6 +29,7 @@ var Client = function(options) {
 	};
 
 	me.send = function(s) {
+		log("send", s)
 		me.connection.send(JSON.stringify({b : s}));
 	};
 
