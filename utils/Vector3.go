@@ -72,8 +72,8 @@ func (v Vector3) RotateX(angle float64) Vector3 {
 	sinRY := math.Sin(angle)
 	return Vector3{
 		v.X,
-		(v.Y * cosRY) + (v.Z * sinRY),
-		(v.Z * -sinRY) + (v.Z * cosRY),
+		(v.Y * cosRY) - (v.Z * sinRY),
+		(v.Y * sinRY) + (v.Z * cosRY),
 	}
 }
 
@@ -83,6 +83,16 @@ func (v Vector3) RotateY(angle float64) Vector3 {
 	return Vector3{
 		(v.X * cosRY) + (v.Z * sinRY),
 		v.Y,
-		(v.Z * -sinRY) + (v.Z * cosRY),
+		(-v.X * sinRY) + (v.Z * cosRY),
+	}
+}
+
+func (v Vector3) RotateZ(angle float64) Vector3 {
+	cosRY := math.Cos(angle)
+	sinRY := math.Sin(angle)
+	return Vector3{
+		(v.X * cosRY) - (v.Y * sinRY),
+		(v.X * sinRY) + (v.Y * cosRY),
+		v.Z,
 	}
 }

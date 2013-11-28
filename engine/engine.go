@@ -151,7 +151,7 @@ func (ge *GameEngine) AddNewPlayer(c *server.Client) *Player {
 		utils.Vector3{0, 0, 0},
 		false, //Inactive at first
 		c,
-		Input{0, 0, false, false, false}, //Input
+		Input{0, 0, false, false, false}, //Input,
 	}
 	ge.players[p.client.Id] = p
 	ge.world.Add(p)

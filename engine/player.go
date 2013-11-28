@@ -5,6 +5,7 @@ import (
 	"github.com/julianduniec/game/server"
 	"github.com/julianduniec/game/utils"
 	"log"
+	"math"
 	"time"
 )
 
@@ -84,15 +85,17 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 		}
 	}
 
+	effectiveRotationVelocity := p.RotationVelocity.ScalarMultiply(dt.Seconds())
+	p.Rotation.X = math.Mod((p.Rotation.X + effectiveRotationVelocity.X), (2 * math.Pi))
+	p.Rotation.Y = math.Mod((p.Rotation.Y + effectiveRotationVelocity.Y), (2 * math.Pi))
+	p.Rotation.Z = math.Mod((p.Rotation.Z + effectiveRotationVelocity.Z), (2 * math.Pi))
+
 	//We calculate the velocity in relation to the
 	//difference in time to make it accurate independent on
 	//different update frequencies
 	effectiveVelocity := p.Velocity.ScalarMultiply(dt.Seconds())
-
+	effectiveVelocity = effectiveVelocity.RotateX(p.Rotation.X).RotateY(p.Rotation.Y).RotateZ(p.Rotation.Z)
 	p.Position = p.Position.Add(effectiveVelocity)
-
-	effectiveRotationVelocity := p.RotationVelocity.ScalarMultiply(dt.Seconds())
-	p.Rotation = p.Rotation.Add(effectiveRotationVelocity)
 
 	return true
 }
