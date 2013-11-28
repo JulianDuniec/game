@@ -109,10 +109,16 @@ var Renderer = function(options) {
 
 	me.updateCameraPosition = function() {
 		if(me.player.clientObject.mesh == null) return;
-		me.camera.position.set(
-			me.player.clientObject.mesh.position.x, 
+
+		var pos = new THREE.Vector3(me.player.clientObject.mesh.position.x, 
 			me.player.clientObject.mesh.position.y, 
 			me.player.clientObject.mesh.position.z - 1000);
+		pos = MathHelpers.VectorRotateX(pos, me.player.clientObject.mesh.rotation.x);
+		pos = MathHelpers.VectorRotateY(pos, me.player.clientObject.mesh.rotation.y);
+		pos = MathHelpers.VectorRotateZ(pos, me.player.clientObject.mesh.rotation.z);
+
+		//TODO: Rotate position before set
+		me.camera.position.set(pos);
 		
 		var pr = new THREE.Euler(
 			me.player.clientObject.mesh.rotation.x, 
