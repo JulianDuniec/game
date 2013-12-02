@@ -33,9 +33,7 @@ var Player = function(options) {
 			
 			me.previousSync = me.latestSync;
 		} else {
-			//Calculate change in position
-			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z).multiplyScalar(diff);
-			me.mesh.position = me.mesh.position.add(vel);
+			
 			
 			//Calculate change in rotation
 			var rotationVel = 
@@ -47,6 +45,13 @@ var Player = function(options) {
 			me.mesh.rotation.x = dr.x;
 			me.mesh.rotation.y = dr.y;
 			me.mesh.rotation.z = dr.z;
+
+			//Calculate change in position
+			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z).multiplyScalar(diff);
+			vel.x = MathHelpers.VectorRotateX(vel.x, me.mesh.rotation.x);
+			vel.x = MathHelpers.VectorRotateY(vel.y, me.mesh.rotation.y);
+			vel.x = MathHelpers.VectorRotateZ(vel.z, me.mesh.rotation.z);
+			me.mesh.position = me.mesh.position.add(vel);
 		}
 		me.lastRendered = new Date();
 	};

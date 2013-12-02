@@ -66,8 +66,8 @@ func (p *Player) Update(w *World, dt time.Duration) bool {
 		p.Velocity.Z -= 15
 	}
 
-	p.Rotation.X = p.input.Y / 500
-	p.Rotation.Y = -p.input.X / 1000
+	p.RotationVelocity.X = p.input.Y / 500
+	p.RotationVelocity.Y = -p.input.X / 1000
 	rotateStep := 0.1
 	if p.input.Left {
 		p.RotationVelocity.Z -= rotateStep

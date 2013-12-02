@@ -1,1 +1,9 @@
-[ ] Removed objects
+[X] Removed objects
+[ ] Rotate input-controls with ship
+[ ] Camera slerp X/Y
+
+
+[ ] Shoot
+[ ] Take damage
+[ ] Player tags
+[ ] Map objects

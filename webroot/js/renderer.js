@@ -23,7 +23,7 @@ var Renderer = function(options) {
 
 	me.initSurroundings = function() {
 		// create the geometry sphere
-		var geometry  = new THREE.SphereGeometry(999999, 32, 32)
+		var geometry  = new THREE.SphereGeometry(99999, 32, 32)
 		// create the material, using a texture of startfield
 		var material  = new THREE.MeshBasicMaterial()
 		material.map   = THREE.ImageUtils.loadTexture('images/galaxy_starfield.png')
@@ -110,16 +110,11 @@ var Renderer = function(options) {
 	me.updateCameraPosition = function() {
 		if(me.player.clientObject.mesh == null) return;
 
-		var pos = new THREE.Vector3(me.player.clientObject.mesh.position.x, 
-			me.player.clientObject.mesh.position.y, 
-			me.player.clientObject.mesh.position.z - 1000);
-		pos = MathHelpers.VectorRotateX(pos, me.player.clientObject.mesh.rotation.x);
-		pos = MathHelpers.VectorRotateY(pos, me.player.clientObject.mesh.rotation.y);
-		pos = MathHelpers.VectorRotateZ(pos, me.player.clientObject.mesh.rotation.z);
-
-		//TODO: Rotate position before set
-		me.camera.position.set(pos);
+		var pos = new THREE.Vector3(0, 0, -1000);
+		pos = me.player.clientObject.mesh.localToWorld(pos);
 		
+		//TODO: Rotate position before set
+		me.camera.position.set(pos.x, pos.y, pos.z);
 		var pr = new THREE.Euler(
 			me.player.clientObject.mesh.rotation.x, 
 			me.player.clientObject.mesh.rotation.y + Math.PI, 
@@ -129,7 +124,7 @@ var Renderer = function(options) {
 		var pq = new THREE.Quaternion();
 		pq.setFromEuler(pr)
 		var newQuaternion = new THREE.Quaternion();
-        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.7);
+        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.1);
         me.camera.quaternion = newQuaternion; 
 	};
 
