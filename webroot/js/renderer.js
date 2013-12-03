@@ -110,21 +110,22 @@ var Renderer = function(options) {
 	me.updateCameraPosition = function() {
 		if(me.player.clientObject.mesh == null) return;
 
-		var pos = new THREE.Vector3(0, 0, -1000);
+		var pos = new THREE.Vector3(0, 0, -2000);
 		pos = me.player.clientObject.mesh.localToWorld(pos);
-		
-		//TODO: Rotate position before set
 		me.camera.position.set(pos.x, pos.y, pos.z);
+
 		var pr = new THREE.Euler(
 			me.player.clientObject.mesh.rotation.x, 
 			me.player.clientObject.mesh.rotation.y + Math.PI, 
 			-me.player.clientObject.mesh.rotation.z, 
 			me.player.clientObject.mesh.rotation.order);
 
+		
 		var pq = new THREE.Quaternion();
 		pq.setFromEuler(pr)
 		var newQuaternion = new THREE.Quaternion();
-        THREE.Quaternion.slerp(me.camera.quaternion,  pq, newQuaternion, 0.1);
+        THREE.Quaternion.slerp(me.camera.quaternion, pq, newQuaternion, 0.1);
+        newQuaternion.normalize()
         me.camera.quaternion = newQuaternion; 
 	};
 
