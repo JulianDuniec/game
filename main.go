@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-
 	gameEngine(
 		webSocketServer())
 	fileServer()
@@ -19,14 +18,19 @@ func gameEngine(s *server.Server) {
 	go e.Run()
 }
 
+/*
+	Main game server
+*/
 func webSocketServer() *server.Server {
 	server := server.NewServer("/ws")
 	go server.Listen()
 	return server
 }
 
+/*
+	Serves web-content (html/js-files)
+*/
 func fileServer() {
-	//Setup file-server
 	http.Handle("/", http.FileServer(http.Dir("webroot")))
 
 	log.Fatal(http.ListenAndServe(":1337", nil))

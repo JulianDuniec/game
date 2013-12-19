@@ -12,9 +12,6 @@ var Player = function(options) {
 			})
 			me.mesh = object3d;
 			me.mesh.position = new THREE.Vector3(options.object.p.x, options.object.p.y, options.object.p.z);
-			me.mesh.rotation.x = options.object.r.x;
-			me.mesh.rotation.y = options.object.r.y;
-			me.mesh.rotation.z = options.object.r.z;
 			callback();
 		});
 		var name = "SpaceFighter02";
@@ -27,25 +24,9 @@ var Player = function(options) {
 		options = o;
 		if (me.lastRendered == null || me.previousSync == null || me.previousSync < me.latestSync) {
 			me.mesh.position = new THREE.Vector3(options.object.p.x, options.object.p.y, options.object.p.z);
-			me.mesh.rotation.x = options.object.r.x;
-			me.mesh.rotation.y = options.object.r.y;
-			me.mesh.rotation.z = options.object.r.z;
 			
 			me.previousSync = me.latestSync;
 		} else {
-			
-			
-			//Calculate change in rotation
-			var rotationVel = 
-				new THREE.Vector3(options.object.rv.x, options.object.rv.y, options.object.rv.z).multiplyScalar(diff);
-			var rotation = new THREE.Vector3(me.mesh.rotation.x, me.mesh.rotation.y, me.mesh.rotation.z);
-			
-			//Calculate the change in rotation
-			var dr = rotation.add(rotationVel);
-			me.mesh.rotation.x = dr.x;
-			me.mesh.rotation.y = dr.y;
-			me.mesh.rotation.z = dr.z;
-
 			//Calculate change in position
 			var vel = new THREE.Vector3(options.object.v.x, options.object.v.y, options.object.v.z).multiplyScalar(diff);
 			vel.x = MathHelpers.VectorRotateX(vel.x, me.mesh.rotation.x);
